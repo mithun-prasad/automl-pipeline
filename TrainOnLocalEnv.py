@@ -24,7 +24,7 @@ run_config_system_managed.environment.python.user_managed_dependencies = False
 
 # # add scikit-learn to the conda_dependencies.yml file
 # Specify conda dependencies with scikit-learn
-run_config_system_managed.environment.python.conda_dependencies = CondaDependencies.create(conda_packages=['scikit-learn>=0.18.0,<=0.19.1', 'numpy>=1.11.0,<1.15.0', 'cython', 'urllib3<1.24', 'scipy>=0.19.0,<0.20.0', 'pandas>=0.22.0,<0.23.0'])
+run_config_system_managed.environment.python.conda_dependencies = CondaDependencies.create(conda_packages=['scikit-learn>=0.18.0,<=0.19.1', 'numpy>=1.11.0,<1.15.0', 'cython', 'urllib3<1.24', 'scipy>=0.19.0,<0.20.0', 'pandas>=0.22.0,<0.23.0'], pip_packages=['pandas_ml', 'azureml-sdk[automl,notebooks]'])
 
 print("Submitting an experiment to new conda virtual env")
 src = ScriptRunConfig(source_directory = './code', script = 'training/automl_train.py', run_config = run_config_system_managed)

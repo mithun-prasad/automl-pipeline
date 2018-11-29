@@ -1,0 +1,22 @@
+# Python Django
+# Test a Django project on multiple versions of Python.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: 3.5
+    architecture: 'x64'
+- script: |
+    pip install azureml
+    pip install azureml.core
+  displayName: 'Install prerequisites'
+- task: PythonScript@0
+  displayName: 'Train on Local Env'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: TrainOnLocalEnv.py

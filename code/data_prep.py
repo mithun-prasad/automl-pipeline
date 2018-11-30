@@ -13,6 +13,19 @@ def download_data():
     # we replace errors.csv with anoms.csv (results from running anomaly detection)
     # urllib.request.urlretrieve(container + 'errors.csv', filename='../data/errors.csv')
     urllib.request.urlretrieve(container + 'anoms.csv', filename='../data/anoms.csv')
+    df_telemetry = pd.read_csv('../data/telemetry.csv', header=0)
+    df_telemetry['datetime'] = pd.to_datetime(df_telemetry['datetime'], format="%m/%d/%Y %I:%M:%S %p")
+    df_errors = pd.read_csv('../data/anoms.csv', header=0)
+    df_errors['datetime'] = pd.to_datetime(df_errors['datetime'])
+    rep_dir = {"volt":"error1", "rotate":"error2", "pressure":"error3", "vibration":"error4"}
+    df_errors = df_errors.replace({"errorID": rep_dir})
+    df_subset = df_errors.loc[(df_errors.datetime.between('2015-01-01', '2016-01-01')) & (df_errors.machineID == 1)]
+    df_subset.head()
+    df_fails = pd.read_csv('../data/failures.csv', header=0)
+    df_fails['datetime'] = pd.to_datetime(df_fails['datetime'], format="%m/%d/%Y %I:%M:%S %p")
+    df_maint = pd.read_csv('../data/maintenance.csv', header=0)
+    df_maint['datetime'] = pd.to_datetime(df_maint['datetime'], format="%m/%d/%Y %I:%M:%S %p")
+    return df_telemetry, df_errors, df_subset, df_fails, df_maint
 
 def get_datetime_diffs(df_left, df_right, catvar, prefix, window, on, lagon = None, diff_type = 'timedelta64[h]', validate = 'one_to_one', show_example = True):
     keys = ['machineID', 'datetime']

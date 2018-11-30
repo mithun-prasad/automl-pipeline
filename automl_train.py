@@ -90,7 +90,7 @@ def get_rolling_aggregates(df, colnames, suffixes, window, on, groupby, lagon = 
 
 home_dir = os.path.expanduser('~')
 config_path = os.path.join(home_dir, 'aml_config')
-ws = Workspace.from_config(path=os.path.join(config_path, 'config.json'))
+ws = Workspace.from_config()
 
 experiment_name =  'pred-maint-automl' # choose a name for experiment
 project_folder = '.' # project folder

@@ -19,7 +19,6 @@ from azureml.train.automl.run import AutoMLRun
 
 from azureml.telemetry import set_diagnostics_collection
 import azureml.core
-import urllib.request
 import numpy as np
 from data_prep import *
 
@@ -45,39 +44,29 @@ set_diagnostics_collection(send_diagnostics=True)
 
 print("SDK Version:", azureml.core.VERSION)
 
-#os.makedirs('../data', exist_ok = True)
-#container = 'https://sethmottstore.blob.core.windows.net/predmaint/'
-#urllib.request.urlretrieve(container + 'telemetry.csv', filename='../data/telemetry.csv')
-#urllib.request.urlretrieve(container + 'maintenance.csv', filename='../data/maintenance.csv')
-#urllib.request.urlretrieve(container + 'machines.csv', filename='../data/machines.csv')
-#urllib.request.urlretrieve(container + 'failures.csv', filename='../data/failures.csv')
-## we replace errors.csv with anoms.csv (results from running anomaly detection)
-## urllib.request.urlretrieve(container + 'errors.csv', filename='../data/errors.csv')
-#urllib.request.urlretrieve(container + 'anoms.csv', filename='../data/anoms.csv')
+df_telemetry, df_errors, df_subset, df_fails, df_maint = download_data()
 
-download_data()
+#df_telemetry = pd.read_csv('../data/telemetry.csv', header=0)
+#df_telemetry['datetime'] = pd.to_datetime(df_telemetry['datetime'], format="%m/%d/%Y %I:%M:%S %p")
+#df_telemetry.head()
 
-df_telemetry = pd.read_csv('../data/telemetry.csv', header=0)
-df_telemetry['datetime'] = pd.to_datetime(df_telemetry['datetime'], format="%m/%d/%Y %I:%M:%S %p")
-df_telemetry.head()
+#df_errors = pd.read_csv('../data/anoms.csv', header=0)
+#df_errors['datetime'] = pd.to_datetime(df_errors['datetime'])
 
-df_errors = pd.read_csv('../data/anoms.csv', header=0)
-df_errors['datetime'] = pd.to_datetime(df_errors['datetime'])
+#rep_dir = {"volt":"error1", "rotate":"error2", "pressure":"error3", "vibration":"error4"}
+#df_errors = df_errors.replace({"errorID": rep_dir})
 
-rep_dir = {"volt":"error1", "rotate":"error2", "pressure":"error3", "vibration":"error4"}
-df_errors = df_errors.replace({"errorID": rep_dir})
+#df_errors.head()
+#df_subset = df_errors.loc[(df_errors.datetime.between('2015-01-01', '2016-01-01')) & (df_errors.machineID == 1)]
+#df_subset.head()
 
-df_errors.head()
-df_subset = df_errors.loc[(df_errors.datetime.between('2015-01-01', '2016-01-01')) & (df_errors.machineID == 1)]
-df_subset.head()
+#df_fails = pd.read_csv('../data/failures.csv', header=0)
+#df_fails['datetime'] = pd.to_datetime(df_fails['datetime'], format="%m/%d/%Y %I:%M:%S %p")
+#df_fails.head()
 
-df_fails = pd.read_csv('../data/failures.csv', header=0)
-df_fails['datetime'] = pd.to_datetime(df_fails['datetime'], format="%m/%d/%Y %I:%M:%S %p")
-df_fails.head()
-
-df_maint = pd.read_csv('../data/maintenance.csv', header=0)
-df_maint['datetime'] = pd.to_datetime(df_maint['datetime'], format="%m/%d/%Y %I:%M:%S %p")
-df_maint.head()
+#df_maint = pd.read_csv('../data/maintenance.csv', header=0)
+#df_maint['datetime'] = pd.to_datetime(df_maint['datetime'], format="%m/%d/%Y %I:%M:%S %p")
+#df_maint.head()
 
 df_join = pd.merge(left=df_maint, right=df_fails.rename(columns={'failure':'comp'}), how = 'outer', indicator=True,
          on=['datetime', 'machineID', 'comp'], validate='one_to_one')
@@ -183,7 +172,7 @@ run = experiment.submit(automl_config, show_output=True)
 best_run, fitted_model = run.get_output()
 
 print("Best Run Metrics:")
-print(best_run.get_metrics())
+print(best_run.get_metrics('accuracy'))
 
 model_name = 'model.pkl'
 with open(model_name, "wb") as file:

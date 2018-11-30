@@ -242,8 +242,23 @@ automl_config = AutoMLConfig(task='classification',
                              y = y_train.values[:, 0], # we convert from pandas to numpy arrays using .vaules
                              path=project_folder, )
 
-local_run = experiment.submit(automl_config, show_output=True)
-best_run, fitted_model = local_run.get_output()
+run = experiment.submit(automl_config, show_output=True)
+best_run, fitted_model = run.get_output()
 
-#joblib.dump(value=fitted_model, filename='model.pkl')
 
+model_name = 'model.pkl'
+with open(model_name, "wb") as file:
+    joblib.dump(value = fitted_model, filename = model_name)
+
+# Upload the model file explicitly into artifacts 
+run.upload_file(name = './outputs/'+ model_name, path_or_stream = model_name)
+print('Uploaded the model {} to experiment {}'.format(model_name, run.experiment.name))
+dirpath = os.getcwd()
+print(dirpath)
+
+# Writing the run id to /aml_config/run_id.json
+run_id = {}
+run_id['run_id'] = run.id
+run_id['experiment_name'] = run.experiment.name
+with open('aml_config/run_id.json', 'w') as outfile:
+  json.dump(run_id,outfile)

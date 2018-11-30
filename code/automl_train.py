@@ -45,15 +45,17 @@ set_diagnostics_collection(send_diagnostics=True)
 
 print("SDK Version:", azureml.core.VERSION)
 
-os.makedirs('../data', exist_ok = True)
-container = 'https://sethmottstore.blob.core.windows.net/predmaint/'
-urllib.request.urlretrieve(container + 'telemetry.csv', filename='../data/telemetry.csv')
-urllib.request.urlretrieve(container + 'maintenance.csv', filename='../data/maintenance.csv')
-urllib.request.urlretrieve(container + 'machines.csv', filename='../data/machines.csv')
-urllib.request.urlretrieve(container + 'failures.csv', filename='../data/failures.csv')
-# we replace errors.csv with anoms.csv (results from running anomaly detection)
-# urllib.request.urlretrieve(container + 'errors.csv', filename='../data/errors.csv')
-urllib.request.urlretrieve(container + 'anoms.csv', filename='../data/anoms.csv')
+#os.makedirs('../data', exist_ok = True)
+#container = 'https://sethmottstore.blob.core.windows.net/predmaint/'
+#urllib.request.urlretrieve(container + 'telemetry.csv', filename='../data/telemetry.csv')
+#urllib.request.urlretrieve(container + 'maintenance.csv', filename='../data/maintenance.csv')
+#urllib.request.urlretrieve(container + 'machines.csv', filename='../data/machines.csv')
+#urllib.request.urlretrieve(container + 'failures.csv', filename='../data/failures.csv')
+## we replace errors.csv with anoms.csv (results from running anomaly detection)
+## urllib.request.urlretrieve(container + 'errors.csv', filename='../data/errors.csv')
+#urllib.request.urlretrieve(container + 'anoms.csv', filename='../data/anoms.csv')
+
+download_data()
 
 df_telemetry = pd.read_csv('../data/telemetry.csv', header=0)
 df_telemetry['datetime'] = pd.to_datetime(df_telemetry['datetime'], format="%m/%d/%Y %I:%M:%S %p")

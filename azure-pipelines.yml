@@ -21,7 +21,7 @@ steps:
     environmentName: azuremlsdk
     packageSpecs: 'python=3.6'
     updateConda: false
-    createOptions: 'scikit-learn==0.19.1 numpy==1.14.5 cython==0.29 urllib3<1.24 scipy==1.1.0 pandas==0.22.0'
+    createOptions: 'scikit-learn==0.19.1 numpy==1.14.5 cython==0.29 urllib3<1.24 scipy==1.1.0 pandas==0.22.0 azureml-core==0.1.74'
 - task: PythonScript@0
   displayName: 'Train on Local Env'
   inputs:

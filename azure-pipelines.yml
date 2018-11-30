@@ -12,11 +12,11 @@ steps:
     architecture: 'x64'
 - script: |
     pip install azureml
-    pip install azureml.core
+    pip install azureml.core==0.1.74
   displayName: 'Install prerequisites'
 - task: PythonScript@0
   displayName: 'Train on Local Env'
   inputs:
     azureSubscription: miprasad
     scriptLocation: scriptPath
-    scriptPath: TrainOnLocalEnv.py
+    scriptPath: automl_train.py

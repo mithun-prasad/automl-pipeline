@@ -25,7 +25,8 @@ def download_data():
     df_fails['datetime'] = pd.to_datetime(df_fails['datetime'], format="%m/%d/%Y %I:%M:%S %p")
     df_maint = pd.read_csv('../data/maintenance.csv', header=0)
     df_maint['datetime'] = pd.to_datetime(df_maint['datetime'], format="%m/%d/%Y %I:%M:%S %p")
-    return df_telemetry, df_errors, df_subset, df_fails, df_maint
+    df_machines = pd.read_csv('../data/machines.csv', header=0)
+    return df_telemetry, df_errors, df_subset, df_fails, df_maint, df_machines
 
 def get_datetime_diffs(df_left, df_right, catvar, prefix, window, on, lagon = None, diff_type = 'timedelta64[h]', validate = 'one_to_one', show_example = True):
     keys = ['machineID', 'datetime']

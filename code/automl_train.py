@@ -44,14 +44,11 @@ set_diagnostics_collection(send_diagnostics=True)
 
 print("SDK Version:", azureml.core.VERSION)
 
-df_telemetry, df_errors, df_subset, df_fails, df_maint = download_data()
+df_telemetry, df_errors, df_subset, df_fails, df_maint, df_machines = download_data()
 
 df_join = pd.merge(left=df_maint, right=df_fails.rename(columns={'failure':'comp'}), how = 'outer', indicator=True,
          on=['datetime', 'machineID', 'comp'], validate='one_to_one')
 df_join.head()
-
-df_machines = pd.read_csv('../data/machines.csv', header=0)
-df_machines.head()
 
 df_left = df_telemetry.loc[:, ['datetime', 'machineID']] # we set this aside to this table to join all our results with
 
@@ -149,10 +146,9 @@ automl_config = AutoMLConfig(task='classification',
 run = experiment.submit(automl_config, show_output=True)
 best_run, fitted_model = run.get_output()
 
-print("Best Run Metrics:")
 best_accuracy = best_run.get_metrics()['accuracy']
+print("Best run accuracy:", accuracy)
 run.log('accuracy', best_accuracy)
-
 
 model_name = 'model.pkl'
 with open(model_name, "wb") as file:

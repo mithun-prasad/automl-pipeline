@@ -147,7 +147,7 @@ run = experiment.submit(automl_config, show_output=True)
 best_run, fitted_model = run.get_output()
 
 best_accuracy = best_run.get_metrics()['accuracy']
-print("Best run accuracy:", accuracy)
+print("Best run accuracy:", best_accuracy)
 run.log('accuracy', best_accuracy)
 
 model_name = 'model.pkl'

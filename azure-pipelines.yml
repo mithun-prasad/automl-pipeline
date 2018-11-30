@@ -28,4 +28,4 @@ steps:
   inputs:
     azureSubscription: miprasad
     scriptLocation: scriptPath
-    scriptPath: automl_train.py
+    scriptPath: code/automl_train.py

@@ -9,6 +9,7 @@ from sklearn import datasets
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
+from sklearn.externals import joblib
 
 import azureml.core
 from azureml.core.experiment import Experiment
@@ -87,10 +88,7 @@ def get_rolling_aggregates(df, colnames, suffixes, window, on, groupby, lagon = 
     df_res = df_res.loc[df_res.index % on == on-1]
     return df_res
 
-
-home_dir = os.path.expanduser('~')
-config_path = os.path.join(home_dir, 'aml_config')
-ws = Workspace.from_config(path = '../aml_config/config.json')
+ws = Workspace.from_config()
 
 experiment_name =  'pred-maint-automl' # choose a name for experiment
 project_folder = '.' # project folder
@@ -246,4 +244,6 @@ automl_config = AutoMLConfig(task='classification',
 
 local_run = experiment.submit(automl_config, show_output=True)
 best_run, fitted_model = local_run.get_output()
-fitted_model
+
+#joblib.dump(value=fitted_model, filename='model.pkl')
+

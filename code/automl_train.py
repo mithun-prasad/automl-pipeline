@@ -182,6 +182,8 @@ automl_config = AutoMLConfig(task='classification',
 run = experiment.submit(automl_config, show_output=True)
 best_run, fitted_model = run.get_output()
 
+print("Best Run Metrics:")
+print(best_run.get_metrics())
 
 model_name = 'model.pkl'
 with open(model_name, "wb") as file:

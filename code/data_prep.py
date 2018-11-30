@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def get_datetime_diffs(df_left, df_right, catvar, prefix, window, on, lagon = None, diff_type = 'timedelta64[h]', validate = 'one_to_one', show_example = True):
     keys = ['machineID', 'datetime']

@@ -39,8 +39,8 @@ print('Downloaded model {} to Project root directory'.format(model_name))
 os.chdir('./model')
 model = Model.register(model_path = model_name, # this points to a local file
                        model_name = model_name, # this is the name the model is registered as
-                       tags = {'area': "diabetes", 'type': "regression", 'run_id' : run_id},
-                       description="Regression model for diabetes dataset",
+                       tags = {'area': "predictive maintenance", 'type': "automl", 'run_id' : run_id},
+                       description="Model for predictive maintenance dataset",
                        workspace = ws)
 os.chdir('..')
 print('Model registered: {} \nModel Description: {} \nModel Version: {}'.format(model.name, model.description, model.version))

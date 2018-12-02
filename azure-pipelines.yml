@@ -41,3 +41,9 @@ steps:
     azureSubscription: miprasad
     scriptLocation: scriptPath
     scriptPath: code/register_model.py
+- task: PythonScript@0
+  displayName: 'Register Model'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/create_scoring_image.py

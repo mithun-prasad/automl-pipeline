@@ -42,7 +42,7 @@ steps:
     scriptLocation: scriptPath
     scriptPath: code/register_model.py
 - task: PythonScript@0
-  displayName: 'Register Model'
+  displayName: 'Create Scoring Image'
   inputs:
     azureSubscription: miprasad
     scriptLocation: scriptPath

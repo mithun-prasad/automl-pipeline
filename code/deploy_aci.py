@@ -2,12 +2,12 @@ import os, json, datetime, sys
 from operator import attrgetter
 from azureml.core import Workspace
 from azureml.core.model import Model
-from azureml.core.image import Image") as f:
+from azureml.core.image import Image
 from azureml.core.webservice import Webservice
 from azureml.core.webservice import AciWebservice
-    print('No new model, thus no deployment on ACI')
-# Get workspaception('No new model to register as production model perform bettews = Workspace.from_config()
-    sys.exit(0)
+
+# Get workspace
+ws = Workspace.from_config()
 
 # Get the Image to deploy details
 try:
@@ -25,10 +25,6 @@ image_version = config['image_version']
 images = Image.list(workspace=ws)
 image, = (m for m in images if m.version==image_version and m.name == image_name)
 print('From image.json, Image used to deploy webservice on ACI: {}\nImage Version: {}\nImage Location = {}'.format(image.name, image.version, image.image_location))
-
-# image = max(images, key=attrgetter('version'))
-# print('From Max Version, Image used to deploy webservice on ACI: {}\nImage Version: {}\nImage Location = {}'.format(image.name, image.version, image.image_location))
-
 
 aciconfig = AciWebservice.deploy_configuration(cpu_cores=1, 
                                             memory_gb=1, 

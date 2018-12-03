@@ -53,9 +53,9 @@ df_join.head()
 df_left = df_telemetry.loc[:, ['datetime', 'machineID']] # we set this aside to this table to join all our results with
 
 # this will make it easier to automatically create features with the right column names
-df_errors['errorID'] = df_errors['errorID'].apply(lambda x: int(x[-1]))
-df_maint['comp'] = df_maint['comp'].apply(lambda x: int(x[-1]))
-df_fails['failure'] = df_fails['failure'].apply(lambda x: int(x[-1]))
+#df_errors['errorID'] = df_errors['errorID'].apply(lambda x: int(x[-1]))
+#df_maint['comp'] = df_maint['comp'].apply(lambda x: int(x[-1]))
+#df_fails['failure'] = df_fails['failure'].apply(lambda x: int(x[-1]))
 
 cols_to_average = df_telemetry.columns[-4:]
 

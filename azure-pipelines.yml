@@ -47,3 +47,9 @@ steps:
     azureSubscription: miprasad
     scriptLocation: scriptPath
     scriptPath: code/create_scoring_image.py
+- task: PythonScript@0
+  displayName: 'Deploy to ACI'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/deploy_aci.py

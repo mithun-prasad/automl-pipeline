@@ -65,6 +65,12 @@ steps:
     azureSubscription: miprasad
     scriptLocation: scriptPath
     scriptPath: code/aci_service_test.py
+- task: PythonScript@0
+  displayName: 'Test AKS Service'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/aks_service_test.py
 - script: |
     python code/testing/data_test.py data_sample/predmain_bad_schema.csv
   displayName: 'Test Schema'

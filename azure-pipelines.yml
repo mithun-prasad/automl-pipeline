@@ -1,7 +1,3 @@
-# Python Django
-# Test a Django project on multiple versions of Python.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
 pool:
   vmImage: 'Ubuntu 16.04'
 
@@ -48,23 +44,11 @@ steps:
     scriptLocation: scriptPath
     scriptPath: code/create_scoring_image.py
 - task: PythonScript@0
-  displayName: 'Deploy to ACI'
-  inputs:
-    azureSubscription: miprasad
-    scriptLocation: scriptPath
-    scriptPath: code/deploy_aci.py
-- task: PythonScript@0
   displayName: 'Deploy to AKS'
   inputs:
     azureSubscription: miprasad
     scriptLocation: scriptPath
     scriptPath: code/deploy_aks.py
-- task: PythonScript@0
-  displayName: 'Test ACI Service'
-  inputs:
-    azureSubscription: miprasad
-    scriptLocation: scriptPath
-    scriptPath: code/aci_service_test.py
 - task: PythonScript@0
   displayName: 'Test AKS Service'
   inputs:

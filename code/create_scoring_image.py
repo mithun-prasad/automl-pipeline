@@ -30,7 +30,7 @@ image_name = "predmaintenance-model-score"
 image_config = ContainerImage.image_configuration(execution_script = "score.py",
                                                   runtime = "python-slim",
                                                   conda_file = "conda_dependencies.yml",
-                                                  description = "Image with ridge regression model",
+                                                  description = "Image with predictive maintenance model",
                                                   tags = {'area': "diabetes", 'type': "regression"}
                                                  )
 

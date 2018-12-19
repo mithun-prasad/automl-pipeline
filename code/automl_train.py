@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 import os
@@ -22,29 +23,32 @@ import azureml.core
 import numpy as np
 from data_prep import *
 
+
+parser = argparse.ArgumentParser("automl_train")
+
+parser.add_argument("--input_directory", type=str, help="input directory")
+args = parser.parse_args()
+
+
+
+print("input directory: %s" % args.input_directory)
+
+
 ws = Workspace.from_config()
 
 experiment_name =  'pred-maint-automl' # choose a name for experiment
 project_folder = '.' # project folder
 
-experiment=Experiment(ws, experiment_name)
-print("Location:", ws.location)
-output = {}
-output['SDK version'] = azureml.core.VERSION
-output['Subscription ID'] = ws.subscription_id
-output['Workspace'] = ws.name
-output['Resource Group'] = ws.resource_group
-output['Location'] = ws.location
-output['Project Directory'] = project_folder
-output['Experiment Name'] = experiment.name
-pd.set_option('display.max_colwidth', -1)
-pd.DataFrame(data=output, index=['']).T
-
-set_diagnostics_collection(send_diagnostics=True)
-
-print("SDK Version:", azureml.core.VERSION)
 
 df_telemetry, df_errors, df_subset, df_fails, df_maint, df_machines = download_data()
+
+with open(os.path.join(args.input_directory, "anoms.pkl"), "rb") as fp:
+    obj = pickle.load(fp)
+df_errors = obj['df_anoms']
+rep_dir = {"volt":"error1", "rotate":"error2", "pressure":"error3", "vibration":"error4"}
+df_errors = df_errors.replace({"errorID": rep_dir})
+df_errors['errorID'] = df_errors['errorID'].apply(lambda x: int(x[-1]))
+
 
 df_join = pd.merge(left=df_maint, right=df_fails.rename(columns={'failure':'comp'}), how = 'outer', indicator=True,
          on=['datetime', 'machineID', 'comp'], validate='one_to_one')

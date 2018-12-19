@@ -17,14 +17,16 @@ steps:
 - script: |
     pip install --user azureml
     pip install --user azureml.core
-    pip install --user azureml-sdk[automl,notebooks]==0.1.74
+    pip install --user azureml-sdk[automl,notebooks]
+    pip install --user azureml-pipeline
+    pip install --user  pyculiarity
   displayName: 'Install prerequisites'
 - task: PythonScript@0
   displayName: 'Train on Local Env'
   inputs:
     azureSubscription: miprasad
     scriptLocation: scriptPath
-    scriptPath: code/automl_train.py
+    scriptPath: code/pipeline.py
 - task: PythonScript@0
   displayName: 'Evaluate Model'
   inputs:

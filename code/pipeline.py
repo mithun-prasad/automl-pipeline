@@ -5,7 +5,7 @@ from azureml.core.compute import ComputeTarget
 
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.pipeline.core import Pipeline, PipelineData, StepSequence
-
+import pandas as pd
 
 ws = Workspace.from_config()
 

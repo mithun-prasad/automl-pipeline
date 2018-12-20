@@ -3,7 +3,6 @@ from pyculiarity import detect_ts
 import os
 import pickle
 import json
-import numpy
 from sklearn.externals import joblib
 from azureml.core.model import Model
 import azureml.train.automl
@@ -11,6 +10,7 @@ from azureml.monitoring import ModelDataCollector
 import time
 import glob
 import numpy as np
+import scipy
 
 model_name = "model.pkl"
 
@@ -280,7 +280,7 @@ def run(rawdata, window=14 * 24):
 
         # this is the end of anomaly detection code
 
-        data = numpy.array(data)
+        data = np.array(data)
         result = model.predict(data)
         prediction_dc.collect(result)
         print ("saving prediction data" + time.strftime("%H:%M:%S"))

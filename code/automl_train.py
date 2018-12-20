@@ -1,4 +1,5 @@
 import argparse
+import pickle
 import json
 import logging
 import os
@@ -15,6 +16,8 @@ from sklearn.externals import joblib
 import azureml.core
 from azureml.core.experiment import Experiment
 from azureml.core.workspace import Workspace
+from azureml.core.run import Run
+
 from azureml.train.automl import AutoMLConfig
 from azureml.train.automl.run import AutoMLRun
 
@@ -23,6 +26,7 @@ import azureml.core
 import numpy as np
 from data_prep import *
 
+import pickle
 
 parser = argparse.ArgumentParser("automl_train")
 
@@ -34,9 +38,9 @@ args = parser.parse_args()
 print("input directory: %s" % args.input_directory)
 
 
-ws = Workspace.from_config()
+# ws = Workspace.from_config()
 
-experiment_name =  'pred-maint-automl' # choose a name for experiment
+# experiment_name =  'pred-maint-automl' # choose a name for experiment
 project_folder = '.' # project folder
 
 
@@ -131,6 +135,9 @@ y_train = df_all.loc[df_all['datetime'] < '2015-10-01', Y_keep]
 X_test = df_all.loc[df_all['datetime'] > '2015-10-15', ].drop(X_drop, axis=1)
 y_test = df_all.loc[df_all['datetime'] > '2015-10-15', Y_keep]
 
+run = Run.get_context()
+experiment = run.experiment
+experiment_name = experiment.name
 
 azureml.train.automl.constants.Metric.CLASSIFICATION_PRIMARY_SET
 
@@ -147,6 +154,8 @@ automl_config = AutoMLConfig(task='classification',
                              y = y_train.values[:, 0], # we convert from pandas to numpy arrays using .vaules
                              path=project_folder, )
 
+
+
 run = experiment.submit(automl_config, show_output=True)
 best_run, fitted_model = run.get_output()
 
@@ -154,11 +163,14 @@ best_accuracy = best_run.get_metrics()['accuracy']
 print("Best run accuracy:", best_accuracy)
 run.log('accuracy', best_accuracy)
 
+# fitted_model = Pipeline([('scaler', StandardScaler()), ('classifier', MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 10), random_state=1))])
+# fitted_model.fit(X_train, y_train)
+
 model_name = 'model.pkl'
 with open(model_name, "wb") as file:
     joblib.dump(value = fitted_model, filename = model_name)
 
-# Upload the model file explicitly into artifacts 
+# Upload the model file explicitly into artifacts
 run.upload_file(name = './outputs/'+ model_name, path_or_stream = model_name)
 print('Uploaded the model {} to experiment {}'.format(model_name, run.experiment.name))
 dirpath = os.getcwd()

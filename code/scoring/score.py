@@ -10,6 +10,7 @@ import azureml.train.automl
 from azureml.monitoring import ModelDataCollector
 import time
 import glob
+import numpy as np
 
 model_name = "model.pkl"
 
@@ -108,7 +109,7 @@ def save_df(df):
     df.to_csv(filename, index=False)
 
 
-def running_avgs(df, sensors, window_size=24):
+def running_avgs(df, sensors, window_size=24, only_copy=False):
     """
     Calculates rolling average according to Welford's online algorithm.
     https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online
@@ -131,11 +132,11 @@ def running_avgs(df, sensors, window_size=24):
 
         curr_value = df.ix[row_index, val_col_index]
 
-        if curr_n > 1:
+        if curr_n == 0 or only_copy:
+            df.ix[row_index, avg_col_index] = curr_value
+        else:   
             prv_avg = df.ix[(row_index -1), avg_col_index]
             df.ix[row_index, avg_col_index] = prv_avg + (curr_value - prv_avg) / window_size
-        else:
-            df.ix[row_index, avg_col_index] = curr_value
 
 
             
@@ -161,7 +162,7 @@ def init():
     prediction_dc = ModelDataCollector("automl_model", identifier="predictions", feature_names=["prediction"])
 
     
-def run(rawdata):
+def run(rawdata, window=14 * 24):
     """
 
     :param data:
@@ -176,21 +177,37 @@ def run(rawdata):
 
     try:
         data = pd.read_json(json.loads(rawdata)['data'])
-        # return json.dumps(data.columns)
 
-        sensors = ['volt','pressure','vibration', 'rotate']  # list(data.columns[2:])
-        
+        # this is the beginning of anomaly detection code
+        # TODO: the anomaly detection service expected one row of a pd.DataFrame w/ a timestamp and machine id, but here we only get a list of values
+        # we therefore create a time stamp ourselves
+        # and create a data frame that the anomaly detection code can understand
+        # eventually, we want this to be harmonized!
+        timestamp = time.strftime("%m/%d/%Y %H:%M:%S", time.localtime())
+        machineID = scipy.random.choice(100)
+        telemetry_data = data[8:16:2]
+        sensors = ['volt','pressure','vibration', 'rotate']
+                
+        data_dict = {'timestamp': timestamp}
+        data_dict = {'machineID': machineID}
+        for i in range(0,4):
+            data_dict[sensors[i]] = [telemetry_data[i]]
+
+        telemetry_df = pd.DataFrame(data=data_dict)
+        telemetry_df['timestamp'] = pd.to_datetime(telemetry_df['timestamp'])
+
         # load dataframe
-        df = load_df(data)
+        df = load_df(telemetry_df)
         
         # add current sensor readings to data frame, also adds fields for anomaly detection results
-        df = append_data(df, data, sensors)
+        df = append_data(df, telemetry_df, sensors)
         
-        # calculate running averages
-        running_avgs(df, sensors)
+        # calculate running averages (no need to do this here, because we are already sending preprocessed data)
+        # TODO: this is disabled for now, because we are dealing with pre-processed data
+        running_avgs(df, sensors, only_copy=True)
         
         # note timestamp  so that we can update the correct row of the dataframe later
-        timestamp = data['timestamp'].values[0]
+        timestamp = telemetry_df['timestamp'].values[0]
         
         # we get a copy of the current (also last) row of the dataframe
         current_row = df.loc[df['timestamp'] == timestamp, :]
@@ -214,6 +231,7 @@ def run(rawdata):
         # a flag to indicate whether we detected an anomaly in any of the sensors after this reading
         detected_an_anomaly = False
         
+        anom_list = []
         # we loop over the sensor columns
         for column in sensors:
             df_s = df.ix[start_row:rows, ('timestamp', column + "_avg")]
@@ -249,14 +267,21 @@ def run(rawdata):
             if not np.isnan(df_s.tail(1)['anoms'].iloc[0]):
                 current_row.ix[0,column + '_an'] = True
                 detected_an_anomaly = True
+                anom_list.append(1.0)
+            else:   
+                anom_list.append(0.0)
 
         # It's only necessary to update the current row in the data frame, if we detected an anomaly
         if detected_an_anomaly:
             df.loc[df['timestamp'] == timestamp, :] = current_row
         save_df(df)
 
-        current_row_arr = numpy.array(current_row)
-        result = model.predict(current_row_arr)
+        data[8:16:2] = anom_list
+
+        # this is the end of anomaly detection code
+
+        data = numpy.array(data)
+        result = model.predict(data)
         prediction_dc.collect(result)
         print ("saving prediction data" + time.strftime("%H:%M:%S"))
     except Exception as e:

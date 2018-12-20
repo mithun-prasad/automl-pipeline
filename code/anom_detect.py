@@ -1,6 +1,6 @@
 import argparse
 from batch_scoring import *
-
+import pickle
 parser = argparse.ArgumentParser("anom_detect")
 
 parser.add_argument("--output_directory", type=str, help="output directory")
@@ -28,7 +28,7 @@ window_sizes = [window_size] * len(sensors)  # this can be changed to have indiv
 machine_ids = telemetry['machineID'].unique()
 
 t = TicToc()
-for machine_id in machine_ids:
+for machine_id in machine_ids[:2]: # TODO: make sure to remove the [:2], this is just here to allow us to test this faster.
     df = telemetry.loc[telemetry.loc[:, 'machineID'] == machine_id, :]
     t.tic()
     print("Working on sensor: ")

@@ -7,7 +7,7 @@ steps:
     architecture: 'x64'
 - task: DownloadSecureFile@1
   inputs:
-    name: configFile 
+    name: configFile
     secureFile: config.json
 - script: | 
   cat $(configFile.secureFilePath)

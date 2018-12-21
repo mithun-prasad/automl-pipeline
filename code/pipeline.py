@@ -12,6 +12,8 @@ from azureml.pipeline.core import Pipeline, PipelineData, StepSequence
 
 import pandas as pd
 
+import json
+
 ws = Workspace.from_config()
 print('Workspace name: ' + ws.name, 
       'Azure region: ' + ws.location, 
@@ -76,7 +78,8 @@ print("Anomaly data object created")
 
 
 anom_detect = PythonScriptStep(name="anomaly_detection",
-                               script_name="anom_detect.py",
+                               # script_name="anom_detect.py",
+                               script_name="code/anom_detect.py",
                                arguments=["--output_directory", anomaly_data],
                                outputs=[anomaly_data],
                                compute_target=aml_compute, 
@@ -87,7 +90,8 @@ print("Anomaly Detection Step created.")
 
 
 automl_train = PythonScriptStep(name="automl_train",
-                                script_name="automl_train.py", 
+                                # script_name="automl_train.py", 
+                                script_name="code/automl_train.py", 
                                 arguments=["--input_directory", anomaly_data],
                                 inputs=[anomaly_data],
                                 compute_target=aml_compute, 
@@ -108,3 +112,14 @@ print("Pipeline validation complete")
 
 pipeline_run = Experiment(ws, 'PdM_pipeline').submit(pipeline, regenerate_outputs=True)
 print("Pipeline is submitted for execution")
+
+pipeline_run.wait_for_completion()
+print("Pipeline execution completed")
+
+
+# Writing the run id to /aml_config/run_id.json
+run_id = {}
+run_id['run_id'] = pipeline_run.id
+run_id['experiment_name'] = pipeline_run.experiment.name
+with open('code/aml_config/run_id.json', 'w') as outfile:
+  json.dump(run_id,outfile)

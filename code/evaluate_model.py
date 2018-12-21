@@ -14,7 +14,7 @@ ws = Workspace.from_config()
 # Add golden data set on which all the model performance can be evaluated
 
 # Get the latest run_id 
-with open("aml_config/run_id.json") as f:
+with open("code/aml_config/run_id.json") as f:
     config = json.load(f)
 
 new_model_run_id = config["run_id"]
@@ -54,5 +54,5 @@ if promote_new_model:
   run_id['run_id'] = new_model_run_id
 
 run_id['experiment_name'] = experiment_name
-with open('aml_config/run_id.json', 'w') as outfile:
+with open('code/aml_config/run_id.json', 'w') as outfile:
   json.dump(run_id,outfile)

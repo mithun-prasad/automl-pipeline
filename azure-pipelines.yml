@@ -9,7 +9,8 @@ steps:
   inputs:
     name: configFile
     secureFile: config.json
-- script: cat $(configFile.secureFilePath)
+- script: echo "Printing the secure file path" 
+- script: echo $(configFile.secureFilePath)
 - task: CondaEnvironment@1
   displayName: 'Create Conda Environment '
   inputs:

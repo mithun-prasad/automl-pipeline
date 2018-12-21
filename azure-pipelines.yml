@@ -10,7 +10,7 @@ steps:
     name: configFile
     secureFile: config.json
 - script: echo "Printing the secure file path" 
-- script: echo $(configFile.secureFilePath)
+- script: ls $(Agent.TempDirectory)\
 - task: CondaEnvironment@1
   displayName: 'Create Conda Environment '
   inputs:

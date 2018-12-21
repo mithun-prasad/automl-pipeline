@@ -6,6 +6,9 @@ steps:
   inputs:
     versionSpec: 3.5
     architecture: 'x64'
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: config.json
 - task: CondaEnvironment@1
   displayName: 'Create Conda Environment '
   inputs:

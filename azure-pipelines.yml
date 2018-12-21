@@ -7,7 +7,10 @@ steps:
     architecture: 'x64'
 - task: DownloadSecureFile@1
   inputs:
+    name: configFile 
     secureFile: config.json
+- script: | 
+  cat $(configFile.secureFilePath)
 - task: CondaEnvironment@1
   displayName: 'Create Conda Environment '
   inputs:

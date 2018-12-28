@@ -55,7 +55,4 @@ model_json['model_version'] = model.version
 model_json['run_id'] = run_id
 with open('aml_config/model.json', 'w') as outfile:
   json.dump(model_json,outfile)
-<<<<<<< HEAD
  
-=======
->>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19

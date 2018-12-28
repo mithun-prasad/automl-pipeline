@@ -22,6 +22,10 @@ except:
 
 run_id = config["run_id"]
 experiment_name = config["experiment_name"]
+print("run_id:", run_id)
+print("experiment name:", experiment_name)
+print("ws:", ws)
+
 exp = Experiment(workspace = ws, name = experiment_name)
 
 run = Run(experiment = exp, run_id = run_id)

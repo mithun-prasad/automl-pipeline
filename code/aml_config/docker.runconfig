@@ -117,3 +117,4 @@ amlcompute:
   name:
 # Maximum number of nodes in the AmlCompute cluster to be created. Minimum number of nodes will always be set to 0.
   clusterMaxNodeCount: 1
+ 

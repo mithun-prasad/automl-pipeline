@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 # number of features
-n_columns = 10
+n_columns = 37
 def check_schema(X):
     n_actual_columns = X.shape[1]
     if n_actual_columns != n_columns:
@@ -29,3 +29,4 @@ if __name__ == "__main__":
     main()
 
 
+ 

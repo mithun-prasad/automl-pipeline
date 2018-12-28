@@ -1,22 +1,63 @@
-# Python Django
-# Test a Django project on multiple versions of Python.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
 pool:
   vmImage: 'Ubuntu 16.04'
-
 steps:
 - task: UsePythonVersion@0
   inputs:
     versionSpec: 3.5
     architecture: 'x64'
+- task: DownloadSecureFile@1
+  inputs:
+    name: configFile
+    secureFile: config.json
+- script: echo "Printing the secure file path" 
+- script: cp $(Agent.TempDirectory)/config.json $(Build.SourcesDirectory)
+- task: CondaEnvironment@1
+  displayName: 'Create Conda Environment '
+  inputs:
+    createCustomEnvironment: true
+    environmentName: azuremlsdk
+    packageSpecs: 'python=3.6'
+    updateConda: false
+    createOptions: 'cython==0.29 urllib3<1.24'
 - script: |
-    pip install azureml
-    pip install azureml.core
+    pip install --user azureml.defaults azureml-sdk[automl,notebooks] scipy scikit-learn pyculiarity pytictoc
   displayName: 'Install prerequisites'
 - task: PythonScript@0
   displayName: 'Train on Local Env'
   inputs:
     azureSubscription: miprasad
     scriptLocation: scriptPath
-    scriptPath: TrainOnLocalEnv.py
+    scriptPath: code/pipeline.py
+- task: PythonScript@0
+  displayName: 'Evaluate Model'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/evaluate_model.py
+- task: PythonScript@0
+  displayName: 'Register Model'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/register_model.py
+- task: PythonScript@0
+  displayName: 'Create Scoring Image'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/create_scoring_image.py
+- task: PythonScript@0
+  displayName: 'Deploy to AKS'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/deploy_aks.py
+- task: PythonScript@0
+  displayName: 'Test AKS Service'
+  inputs:
+    azureSubscription: miprasad
+    scriptLocation: scriptPath
+    scriptPath: code/aks_service_test.py
+- script: |
+    python code/testing/data_test.py data_sample/predmain_bad_schema.csv
+  displayName: 'Test Schema'

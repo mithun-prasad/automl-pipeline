@@ -48,4 +48,7 @@ aci_webservice['aci_name'] = service.name
 aci_webservice['aci_url'] = service.scoring_uri
 with open('aml_config/aci_webservice.json', 'w') as outfile:
   json.dump(aci_webservice,outfile)
+<<<<<<< HEAD
  
+=======
+>>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19

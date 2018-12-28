@@ -73,4 +73,7 @@ aks_webservice['aks_url'] = service.scoring_uri
 aks_webservice['aks_keys'] = service.get_keys()
 with open('aml_config/aks_webservice.json', 'w') as outfile:
   json.dump(aks_webservice,outfile)
+<<<<<<< HEAD
  
+=======
+>>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19

@@ -12,6 +12,11 @@ import glob
 import numpy as np
 import scipy
 
+<<<<<<< HEAD
+=======
+model_name = "model.pkl"
+
+>>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19
 def create_data_dict(data, sensors):
     """
 
@@ -154,8 +159,11 @@ def init():
     for f in files:
         os.remove(f)
 
+<<<<<<< HEAD
     model_name = "model.pkl"
 
+=======
+>>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19
     model_path = Model.get_model_path(model_name = model_name)
     # deserialize the model file back into a sklearn model
     model = joblib.load(model_path)

@@ -79,12 +79,20 @@ print("Done.")
 
     
 window_size = 12  # how many measures to include in rolling average
+<<<<<<< HEAD
 sensors = telemetry.columns[2:] # sensors are stored in column 2 on
+=======
+sensors = telemetry.columns[2:]
+>>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19
 window_sizes = [window_size] * len(sensors)  # this can be changed to have individual window_sizes for each sensor
 machine_ids = telemetry['machineID'].unique()
 
 t = TicToc()
+<<<<<<< HEAD
 for machine_id in machine_ids[:1]: # TODO: make sure to remove the [:2], this is just here to allow us to test this
+=======
+for machine_id in machine_ids[:2]: # TODO: make sure to remove the [:2], this is just here to allow us to test this
+>>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19
     df = telemetry.loc[telemetry.loc[:, 'machineID'] == machine_id, :]
     t.tic()
     print("Working on sensor: ")

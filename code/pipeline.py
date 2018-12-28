@@ -131,13 +131,12 @@ def_data_store.download(target_path='.',
                         overwrite=True)
 
 def_data_store.download(target_path='.',
-                        prefix='outputs',
                         show_progress=True,
                         overwrite=True)
 print("Updated aml_config and outputs folder")
 
 model_fname = 'model.pkl'
-model_path = os.path.join("outputs", model_fname)
+# model_path = os.path.join("outputs", model_fname)
 
 # Upload the model file explicitly into artifacts (for CI/CD)
 pipeline_run.upload_file(name = model_path, path_or_stream = model_path)

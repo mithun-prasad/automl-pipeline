@@ -30,11 +30,7 @@ image_name = "predmaintenance-model-score"
 image_config = ContainerImage.image_configuration(execution_script = "score.py",
                                                   runtime = "python-slim",
                                                   conda_file = "conda_dependencies.yml",
-<<<<<<< HEAD
                                                   description = "Image with predictive maintenance model",
-=======
-                                                  description = "Image with ridge regression model",
->>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19
                                                   tags = {'area': "diabetes", 'type': "regression"}
                                                  )
 
@@ -58,7 +54,3 @@ image_json['image_version'] = image.version
 image_json['image_location'] = image.image_location
 with open('aml_config/image.json', 'w') as outfile:
   json.dump(image_json,outfile)
-<<<<<<< HEAD
- 
-=======
->>>>>>> d07f34a81d6ad3c2bacb7beab8698c05dda9da19
